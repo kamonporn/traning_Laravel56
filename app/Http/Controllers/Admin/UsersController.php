@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 use App\User as UserMod;
+use App\Model\Shop as ShopMod ;
+use App\Model\Product as ProductMod ;
+
 
 class UsersController extends Controller
 {
@@ -16,12 +19,15 @@ class UsersController extends Controller
      */
     public function index()
     {
+        $mods = UserMod::paginate(15);
+        return view('admin.user.lists', compact('mods') );
+
         //$mods = UserMod::where('active', 1 ) 
            // ->where('city', 'bangkok')
            // ->orderBy('name', 'desc')
            // ->get();
 
-        $mods = UserMod::find([1, 2, 3, 5]);
+       // $mods = UserMod::find([1, 2, 3, 5]);
 
 
      // $mods = UserMod::all();
@@ -29,9 +35,37 @@ class UsersController extends Controller
         // Using alias name
         //$mods = UserMod::all();
 
-        foreach ($mods as $item) {
-            echo $item->name. " .".$item->surname." ".$item->email. "<br />";
-        }
+      //  foreach ($mods as $item) {
+       //     echo $item->name. " .".$item->surname." ".$item->email. "<br />";
+       // }
+  /*
+
+        $item = [
+            'item1' => 'My Value1',
+            'item2' => 'My Value2'
+        ];
+
+        $results = [
+            'data' => $data,
+            'item' => $item
+        ];
+
+        return view('test', $results);*/
+      /*  $data = [
+           'name' => 'My Name',
+           'surname' => 'My SurName',
+           'email' => 'myemail@gmail.com'
+       ];
+
+       /* $user = UserMod::find(1);
+        $mods = UserMod::all();
+
+        return view('test', compact('data', 'user', 'mods')); */
+
+
+        return view('template');
+         //->with('name','My name') 
+        // ->with('email','minmy@gmail.com');*/
 
 
 
@@ -55,7 +89,14 @@ class UsersController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        //dd($request); exit;
+        $mod = new UserMod;
+        $mod->name = $request->name;
+        $mod->email = $request->email;
+        $mod->password = bcrypt($request->password);
+        $mod->save();
+
+
     }
 
     /**
@@ -66,9 +107,25 @@ class UsersController extends Controller
      */
     public function show($id)
     {
-        $mod = UserMod::find($id);
-        echo $mod->name. " .".$mod->surname." ".$mod->email. "<br />";
-    }
+        $products = ProductMod::find($id);
+        echo "products Name is :".$products->name;
+        echo "<br />";
+        echo "Shop owner is :".$products->shop->name;
+           /* foreach ($products as $product) {
+                echo $product->name."<br />";
+            }*/
+      //
+}
+
+      /*  $mod = UserMod::find($id);
+        echo $mod->name. " .".$mod->surname." => is owner shop :" .$mod->shop->name;*/
+
+       
+      //  $mod = ShopMod::find($id);
+         //   echo $mod->name.
+         //    "<br />";
+
+          //  echo $mod->user->name;    }
 
     /**
      * Show the form for editing the specified resource.
@@ -76,7 +133,7 @@ class UsersController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public  function edit($id)
     {
         //
     }
@@ -90,7 +147,11 @@ class UsersController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $mod = UserMod::find($id);
+        $mod->name = $request->name;
+        $mod->email = $request->email;
+        $mod->password = bcrypt($request->password);
+        $mod->save();
     }
 
     /**
@@ -101,6 +162,8 @@ class UsersController extends Controller
      */
     public function destroy($id)
     {
-        //
+         $mod = UserMod::find($id);
+          $mod->delete();
+
     }
 }
